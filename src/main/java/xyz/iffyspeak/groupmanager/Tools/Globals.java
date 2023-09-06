@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import xyz.iffyspeak.groupmanager.Tools.SQL.MySQL;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,9 +32,26 @@ public class Globals {
         public static MySQL mySQL = null;
     }
 
-    public static class Serialization
+    public static class Prefixes
     {
+        public static List<PrefixedPlayer> prefixedPlayers = new ArrayList<>();
+        public static List<String> getPrefixesList()
+        {
+            return Arrays.asList(
+                    "<color:#0400ff><b>PLAYER</b></color> ",
+                    "<color:#ff00bb><b>COMPETITOR</b></color> ",
+                    "<color:#ff4400><b>MEMBER</b></color> ",
+                    "<color:#00ffc8><b>PARTICIPANT</b></color> ",
+                    "<color:#e196ff><b>ENTERTAINER</b></color> ",
+                    "<color:#a6ffdd><b>PERFORMER</b></color> ",
+                    "<color:#ff9a57><b>PAWN</b></color> "
+                    );
+        }
 
+        public static String getRandomPrefix()
+        {
+            return getPrefixesList().get(Toolkit.RNG.RandomRange(getPrefixesList().size(), 0));
+        }
     }
 
 }
