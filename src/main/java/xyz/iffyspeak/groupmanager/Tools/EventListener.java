@@ -50,7 +50,7 @@ public class EventListener implements Listener {
         // We really prefer if that original, ugly, message didn't get out
         _e.setCancelled(true);
 
-        Component prefix = null;
+        Component prefix = MiniMessage.miniMessage().deserialize("");
         Component name = MiniMessage.miniMessage().deserialize(_e.getPlayer().getName() + ": ");
 
         // I want to allow people to use MiniMessage format as well. So this workaround does a good enough job.
@@ -59,7 +59,7 @@ public class EventListener implements Listener {
 
         Component build = Component.text("");
 
-        if (Globals.All.GameAdministrators.contains(_e))
+        if (Globals.All.GameAdministrators.contains(_e.getPlayer().getUniqueId()))
         {
             prefix = MiniMessage.miniMessage().deserialize("<color:#ff0000><b>ADMINISTRATOR</b></color> ");
         } else
