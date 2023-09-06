@@ -1,0 +1,6 @@
+name: Group Manager
+version: '${project.version}'
+main: xyz.iffyspeak.groupmanager.GroupManager
+api-version: '1.20'
+load: STARTUP
+authors: [iffyspeak]
