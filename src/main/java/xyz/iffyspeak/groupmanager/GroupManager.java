@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.iffyspeak.groupmanager.Tools.EventListener;
 import xyz.iffyspeak.groupmanager.Tools.Globals;
 import xyz.iffyspeak.groupmanager.Tools.GlowEffect;
 import xyz.iffyspeak.groupmanager.Tools.SQL.MySQL;
@@ -61,6 +62,8 @@ public final class GroupManager extends JavaPlugin {
                 Toolkit.Configurations.InitalizeAdminsList.FromSQL(Globals.Database.mySQL);
             }
         }
+
+        getServer().getPluginManager().registerEvents(new EventListener(), this);
 
         GlowEffect.clearColorTeams();
         GlowEffect.setupColorTeams();

@@ -1,6 +1,6 @@
-name: Group Manager
+name: GroupManager
 version: '${project.version}'
 main: xyz.iffyspeak.groupmanager.GroupManager
 api-version: '1.20'
-load: STARTUP
+load: POSTWORLD
 authors: [iffyspeak]
