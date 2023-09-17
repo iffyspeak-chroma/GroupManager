@@ -62,6 +62,7 @@ public class EventListener implements Listener {
         if (Globals.All.GameAdministrators.contains(_e.getPlayer().getUniqueId()))
         {
             prefix = MiniMessage.miniMessage().deserialize("<color:#ff0000><b>ADMINISTRATOR</b></color> ");
+            message = "<red>" + message + "</red>";
         } else
         {
             for (PrefixedPlayer pp : Globals.Prefixes.prefixedPlayers)
