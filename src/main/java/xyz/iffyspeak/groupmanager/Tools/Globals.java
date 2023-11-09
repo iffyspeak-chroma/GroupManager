@@ -88,8 +88,7 @@ public class Globals {
                         if (SQLToolkit.IsPlayerInGroup(Database.mySQL, String.valueOf(sender.getUniqueId()), "administrator"))
                         {
                             // Execute the command
-                            formalArgs.remove(0);
-                            cmd.execute(formalArgs, sender);
+                            cmd.execute(formalArgs.subList(1, formalArgs.size()), sender);
                             return;
                         } else
                         {
@@ -100,8 +99,7 @@ public class Globals {
                     } else
                     {
                         // Execute command
-                        formalArgs.remove(0);
-                        cmd.execute(formalArgs, sender);
+                        cmd.execute(formalArgs.subList(1, formalArgs.size()), sender);
                     }
                 }
             }

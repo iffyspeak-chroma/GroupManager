@@ -53,7 +53,7 @@ public class HelpCommand extends BasicCommand {
         {
             output = output.append(comp).appendNewline();
         }
-        sender.sendMessage(header);
+        sender.sendMessage(MiniMessage.miniMessage().deserialize(header));
         sender.sendMessage(output);
     }
 }
