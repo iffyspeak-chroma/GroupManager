@@ -25,6 +25,7 @@ public final class GroupManager extends JavaPlugin {
         Globals.Commands.RegisterCommand(new AddAdminCommand());
         Globals.Commands.RegisterCommand(new AddLifeCommand());
         Globals.Commands.RegisterCommand(new RemoveLifeCommand());
+        Globals.Commands.RegisterCommand(new LivesCommand());
 
         // Attempt load config
         try {
