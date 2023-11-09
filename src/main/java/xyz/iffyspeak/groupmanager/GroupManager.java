@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.iffyspeak.groupmanager.PrivateCommandKit.*;
 import xyz.iffyspeak.groupmanager.Tools.EventListener;
 import xyz.iffyspeak.groupmanager.Tools.Globals;
 import xyz.iffyspeak.groupmanager.Tools.GlowEffect;
@@ -19,6 +20,12 @@ public final class GroupManager extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        Globals.Commands.RegisterCommand(new HelpCommand());
+        Globals.Commands.RegisterCommand(new RemoveAdminCommand());
+        Globals.Commands.RegisterCommand(new AddAdminCommand());
+        Globals.Commands.RegisterCommand(new AddLifeCommand());
+        Globals.Commands.RegisterCommand(new RemoveLifeCommand());
+
         // Attempt load config
         try {
             Globals.All.configuration = YamlDocument.create(new File(getDataFolder(), "configuration.yml"), getResource("configuration.yml"));

@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import xyz.iffyspeak.groupmanager.PrivateCommandKit.BasicCommand;
 import xyz.iffyspeak.groupmanager.Tools.SQL.MySQL;
 import xyz.iffyspeak.groupmanager.Tools.SQL.SQLToolkit;
 
@@ -60,101 +61,54 @@ public class Globals {
     }
 
     public static class Commands {
+        public static List<BasicCommand> registeredCommands = new ArrayList<>();
+        public static void RegisterCommand(BasicCommand command)
+        {
+            registeredCommands.add(command);
+        }
         public static void ProcessCommand(Player sender, String command)
         {
             // Strip out inital :: and split into args
             // args[0] should be the identifier
             // Everything after 0 are args
-            String[] args = command.replaceFirst("::", "").split(" ");
+            String[] informalArgs = command.replaceFirst("::", "").split(" ");
+            List<String> formalArgs = Arrays.asList(informalArgs);
 
-            // Any command from the processor here on out should only be ran by people who are qualified
-            if (SQLToolkit.IsPlayerInGroup(Database.mySQL, String.valueOf(sender.getUniqueId()), "administrator"))
+            boolean foundCommand = false;
+            for (BasicCommand cmd : registeredCommands)
             {
-                // They are administrator. We can do what they want
-
-                if (args[0].equals("addadmin")) // Add another admin to the list
+                // Search for the command
+                if (formalArgs.get(0).equals(cmd.getName()))
                 {
-                    for (Player p : Bukkit.getOnlinePlayers())
+                    // Found the command, check if it needs admin to run
+                    foundCommand = true;
+                    if (cmd.requiresAdmin())
                     {
-                        if (args[1].equals(p.getName()))
+                        // Check if the sender has admin
+                        if (SQLToolkit.IsPlayerInGroup(Database.mySQL, String.valueOf(sender.getUniqueId()), "administrator"))
                         {
-                            String retstr = "<color:#00ff00>Successfully added <yellow>" + p.getName() + "</yellow> as an administrator</color>.";
-                            SQLToolkit.setPlayerGroup(Database.mySQL, String.valueOf(p.getUniqueId()), "administrator");
-                            sender.sendMessage(MiniMessage.miniMessage().deserialize(retstr));
+                            // Execute the command
+                            formalArgs.remove(0);
+                            cmd.execute(formalArgs, sender);
+                            return;
+                        } else
+                        {
+                            // No permission
+                            sender.sendMessage(MiniMessage.miniMessage().deserialize("<b><red>Silly goober. You cannot run that</red></b>"));
                             return;
                         }
-                    }
-                    sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>Could not find a player by that name.</red>"));
-                    return;
-                }
-
-                if (args[0].equals("remadmin")) // Remove an admin from the list
-                {
-                    for (Player p : Bukkit.getOnlinePlayers())
+                    } else
                     {
-                        if (args[1].equals(p.getName()))
-                        {
-                            String retstr = "<color:#00ff00>Successfully removed <yellow>" + p.getName() + "</yellow> as an administrator</color>.";
-                            SQLToolkit.setPlayerGroup(Database.mySQL, String.valueOf(p.getUniqueId()), "NoGroup");
-                            sender.sendMessage(MiniMessage.miniMessage().deserialize(retstr));
-                            return;
-                        }
-                    }
-                    sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>Could not find a player by that name.</red>"));
-                    return;
-                }
-
-                if (args[0].equals("addlife")) // Add lives to a player
-                {
-                    if (args.length < 2)
-                    {
-                        sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>Not enough arguments<newline>::addlife (username) [amount]</red>"));
-                        return;
-                    }
-
-                    if (args.length >= 3)
-                    {
-                        String username;
-                        int amount;
-                        try {
-                            username = args[1];
-                            amount = Integer.parseInt(args[2]);
-                        } catch (Exception e)
-                        {
-                            sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>Invalid argument. I don't think that's a number.</red>"));
-                            return;
-                        }
-
-                        for (Player p : Bukkit.getOnlinePlayers())
-                        {
-                            if (username.equals(p.getName()))
-                            {
-                                String retstr = "<color:#00ff00>Added <yellow>" + amount + "</yellow> lives <yellow>to " + p.getName() + "</yellow>.</color>";
-                                int curLives = SQLToolkit.getPlayerLives(Database.mySQL, String.valueOf(p.getUniqueId()));
-                                SQLToolkit.setPlayerLives(Database.mySQL, String.valueOf(p.getUniqueId()), curLives + amount);
-                                p.sendMessage(MiniMessage.miniMessage().deserialize(retstr));
-                                return;
-                            }
-                        }
-                        sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>Could not find a player by that name.</red>"));
-                        return;
-                    }
-
-                    if (args.length == 2)
-                    {
-                        for (Player p : Bukkit.getOnlinePlayers())
-                        {
-                            if (args[1].equals(p.getName()))
-                            {
-                                String retstr = "<color:#00ff00>Added <yellow>1</yellow> life <yellow>to " + p.getName() + "</yellow>.</color>";
-                                int curLives = SQLToolkit.getPlayerLives(Database.mySQL, String.valueOf(p.getUniqueId()));
-                                SQLToolkit.setPlayerLives(Database.mySQL, String.valueOf(p.getUniqueId()), curLives + 1);
-                                p.sendMessage(MiniMessage.miniMessage().deserialize(retstr));
-                            }
-                        }
-                        sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>Could not find a player by that name.</red>"));
+                        // Execute command
+                        formalArgs.remove(0);
+                        cmd.execute(formalArgs, sender);
                     }
                 }
+            }
+            if (!foundCommand)
+            {
+                // Command does not exist
+                sender.sendMessage(MiniMessage.miniMessage().deserialize("<b><red>That command does not exist</red></b>"));
             }
         }
     }
