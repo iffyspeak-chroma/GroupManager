@@ -35,6 +35,29 @@ public class Toolkit {
                 }
             }
         }
+
+        public static boolean IsRegisteredAdministrator(Player player)
+        {
+            // Look through the list of already loaded administrators
+            if (Globals.All.GameAdministrators.contains(player.getUniqueId()))
+            {
+                return true;
+            }
+
+            if (Globals.Database.mySQL != null)
+            {
+                for (String uid : SQLToolkit.getAllUUIDsInGroup(Globals.Database.mySQL, "administrator"))
+                {
+                    if (player.getUniqueId() == UUID.fromString(uid))
+                    {
+                        // Player is not already on the loaded list, so we'll put them on there.
+                        
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 
     public static class RNG {

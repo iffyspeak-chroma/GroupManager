@@ -50,6 +50,13 @@ public class EventListener implements Listener {
         // We really prefer if that original, ugly, message didn't get out
         _e.setCancelled(true);
 
+        if (MiniMessage.miniMessage().serialize(_e.message()).startsWith("::"))
+        {
+            // Send it to the command processor
+            Globals.Commands.ProcessCommand(_e.getPlayer(), MiniMessage.miniMessage().serialize(_e.message()));
+            return;
+        }
+
         Component prefix = MiniMessage.miniMessage().deserialize("");
         Component name = MiniMessage.miniMessage().deserialize(_e.getPlayer().getName() + ": ");
 

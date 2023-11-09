@@ -79,6 +79,66 @@ public class SQLToolkit {
         return "NoGroup";
     }
 
+    public static boolean IsPlayerInGroup(MySQL sql, String uuid, String group)
+    {
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT GROUPNAME FROM grouplist WHERE UUID=?");
+            ps.setString(1, uuid);
+            ResultSet rs = ps.executeQuery();
+            String rsgroup = "NoGroup";
+
+            if (rs.next())
+            {
+                rsgroup = rs.getString("GROUPNAME");
+
+                if (rsgroup.equals(group))
+                {
+                    return true;
+                }
+            }
+        } catch (Exception e)
+        {
+            Bukkit.getLogger().severe(e.toString());
+            //e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static void setPlayerLives(MySQL sql, String uuid, int lives)
+    {
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement("UPDATE lifelist SET LIFECOUNT=? WHERE UUID=?");
+            ps.setInt(1, lives);
+            ps.setString(2, uuid);
+            ps.executeUpdate();
+        } catch (Exception e)
+        {
+            Bukkit.getLogger().severe(e.toString());
+            //e.printStackTrace();
+        }
+    }
+
+    public static int getPlayerLives(MySQL sql, String uuid)
+    {
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT LIFECOUNT FROM lifelist WHERE UUID=?");
+            ps.setString(1, uuid);
+            ResultSet rs = ps.executeQuery();
+            int rslives;
+
+            if (rs.next())
+            {
+                rslives = rs.getInt("LIFECOUNT");
+                return rslives;
+            }
+        } catch (Exception e)
+        {
+            Bukkit.getLogger().severe(e.toString());
+            //e.printStackTrace();
+        }
+        return -1;
+    }
+
     public static List<String> getAllUUIDsInGroup(MySQL sql, String group)
     {
         List<String> uidret = new ArrayList<>();
